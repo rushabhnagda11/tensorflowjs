@@ -570,24 +570,28 @@
                             return [4, this.model.executeAsync(batched)];
                         case 1:
                             result = _b.sent();
-                            scores = result[0].dataSync();
-                            console.log(scores)
-                            boxes = result[1].dataSync();
-                            console.log(boxes)
+                            scores = result[1].dataSync();
+                            boxes = result[0].dataSync();
 
                             batched.dispose();
                             tf.dispose(result);
                             _a = __read(this.calculateMaxScores(scores, result[0].shape[1], result[0].shape[2]), 2), maxScores = _a[0], classes = _a[1];
                             prevBackend = tf.getBackend();
                             tf.setBackend('cpu');
-                            indexTensor = tf.tidy(function () {
-                                var boxes2 = tf.tensor2d(boxes, [result[1].shape[1], result[1].shape[3]]);
-                                return tf.image.nonMaxSuppression(boxes2, maxScores, 1, 0.5, 0.5);
-                            });
-                            indexes = indexTensor.dataSync();
-                            indexTensor.dispose();
+                            // indexTensor = tf.tidy(function () {
+                            //     var boxes2 = tf.tensor2d(boxes, [result[1].shape[1], result[1].shape[3]]);
+                            //     return tf.image.nonMaxSuppression(boxes2, maxScores, maxNumBoxes, 0.5, 0.5);
+                            // });
+                            // indexes = indexTensor.dataSync();
+                            // indexTensor.dispose();
+                            let indexes=[];
+                            for(let i = 0; i < scores.length; i++) {
+                                if(scores[i] > 0.5) {
+                                    indexes.push(i)
+                                }
+                            }
                             tf.setBackend(prevBackend);
-                            return [2, this.buildDetectedObjects(width, height, boxes, maxScores, indexes, classes)];
+                            return [2, this.buildDetectedObjects(width, height, boxes, scores, indexes, classes)];
                     }
                 });
             });

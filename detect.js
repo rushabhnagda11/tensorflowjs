@@ -81,7 +81,7 @@ class App extends React.Component {
         });
 
       // define a Promise that'll be used to load the model
-      const loadlModelPromise = cocoSsd.load();
+      const loadlModelPromise = cocoSsd.load({modelUrl: 'https://nanonets.s3-us-west-2.amazonaws.com/uploadedfiles/87be4e38-b40d-4217-898b-fd619319c2e4/ssd/model.json'});
       //let loadlModelPromise = tf.loadGraphModel('https://nanonets.s3-us-west-2.amazonaws.com/uploadedfiles/87be4e38-b40d-4217-898b-fd619319c2e4/ssd/model.json');
       
       // resolve all the Promises
